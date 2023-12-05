@@ -4,19 +4,21 @@
 
 void sort(Student list[], int* n);
 void del();
+void show();
 
 int main() {
-	
-	Student studentsArr[100];
-	Exam examArr[100];
+
+	Student studentsArr[20];
+	Exam examArr[20];
 
 	int numberOfStudents = 0;
-	int n;
+	// int n;
 
-	//show();
+	show();
+
 	//add(studentsArr, &numberOfStudents);
-	
-	del();
+
+	//del();
 
 	return 0;
 	//show1();

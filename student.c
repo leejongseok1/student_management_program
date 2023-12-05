@@ -14,32 +14,38 @@ void bubble_Sort(Student list[], int n);
 
 void show() {
 
-	char str[200];
 	FILE* fp;
 	errno_t err;
-	
+
 	err = fopen_s(&fp, "students.txt", "rt");
 
 	if (NULL != fp) {
 		printf("학번\t\t이름\t전화\t\t생년월일\t성별\t키\t이메일\n");
-		
-		while (NULL != fgets(str, sizeof(str), fp))
-		{
-			printf("%s", str);
+
+		char* buffer = (char*)malloc(200 * sizeof(char));
+
+		if (buffer == NULL) {
+			fprintf(stderr, "memory allocation failed\n");
+			fclose(fp);
+			return;
 		}
+		while (NULL != fgets(buffer, 200, fp))
+		{
+			printf("%s", buffer);
+		}
+
+		free(buffer);
 		fclose(fp);
 	}
 	else
-		printf("파일 열기 실패\n");
-
-	return 0;
+		printf("File Open Error...\n");
 }
 
 
+void add(Student* students, int* num) {
 
-void add(Student *students, int* num) {
-
-	//FILE* file = fopen("student.txt", "a");
+	// 학생이 성공적으로 추가되면 
+	// 포인터를 사용해 num 값 업데이트
 
 	FILE* fp;
 	errno_t err;
@@ -91,7 +97,8 @@ void add(Student *students, int* num) {
 
 		fclose(fp);
 		(*num)++;
-	} else {
+	}
+	else {
 		printf("File Open Error...\n");
 	}
 }
@@ -175,7 +182,8 @@ void del() {
 
 		if (student.id != studentId) {
 			found = 1;
-		} else {
+		}
+		else {
 			fprintf(fileOut, "%d %s %s %d %c %d %s\n",
 				student.id,
 				student.name,
@@ -221,9 +229,9 @@ void sort(Student list[], int* n) {
 
 	if (err == 0 && NULL != fp) {
 		while (fscanf_s(fp, "%d %s %s %d %c %d %s", &list[i].id, list[i].name, sizeof(list[i].name),
-																	list[i].tel, sizeof(list[i].tel), &list[i].birth,
-																	&list[i].gender, sizeof(list[i].gender), &list[i].height,
-																	list[i].email, sizeof(list[i].email)) == 7) 
+			list[i].tel, sizeof(list[i].tel), &list[i].birth,
+			&list[i].gender, sizeof(list[i].gender), &list[i].height,
+			list[i].email, sizeof(list[i].email)) == 7)
 		{
 			height[i] = list[i].height;
 			i++;
@@ -234,13 +242,14 @@ void sort(Student list[], int* n) {
 		bubble_Sort(list, *n);
 
 		printf("학번\t\t이름\t전화\t\t생년월일\t성별\t키\t이메일\n");
-		
-		for (i = 0; i < *n; i++) {
-			printf("%d\t%s\t%s\t%d\t%c\t%d\t%s\n",list[i].id, list[i].name, list[i].tel, list[i].birth, list[i].gender,  list[i].height, list[i].email);
-		}
-		
 
-		} else {
+		for (i = 0; i < *n; i++) {
+			printf("%d\t%s\t%s\t%d\t%c\t%d\t%s\n", list[i].id, list[i].name, list[i].tel, list[i].birth, list[i].gender, list[i].height, list[i].email);
+		}
+
+
+	}
+	else {
 		printf("File Open Error...\n");
 	}
 
