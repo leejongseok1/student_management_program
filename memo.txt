@@ -1,4 +1,2 @@
-completion : show
-
-to do : add(), exam(), sort() 동적 메모리 할당
+to do : exam(), sort() 동적 메모리 할당
         del(), quit() 함수 작성
