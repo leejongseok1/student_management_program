@@ -54,9 +54,9 @@ void add(Student* students, int* num) {
 
 	if (NULL != fp) {
 
-		students[*num].name = (char*)malloc(sizeof(char) * 40);  // 예시로 100으로 가정
-		students[*num].tel = (char*)malloc(sizeof(char) * 15);    // 예시로 20으로 가정
-		students[*num].email = (char*)malloc(sizeof(char) * 30);  // 예시로 100으로 가정
+		students[*num].name = (char*)malloc(sizeof(char) * 40);  
+		students[*num].tel = (char*)malloc(sizeof(char) * 15);    
+		students[*num].email = (char*)malloc(sizeof(char) * 30);  
 
 		if (students[*num].name == NULL || students[*num].tel == NULL || students[*num].email == NULL) {
 			// 메모리 할당 실패
