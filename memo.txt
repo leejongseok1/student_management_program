@@ -1,2 +1,3 @@
 to do : exam(), sort() 동적 메모리 할당
         del(), quit() 함수 작성
+
