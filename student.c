@@ -53,17 +53,29 @@ void add(Student* students, int* num) {
 	err = fopen_s(&fp, "students.txt", "a");
 
 	if (NULL != fp) {
+
+		students[*num].name = (char*)malloc(sizeof(char) * 40);  // 예시로 100으로 가정
+		students[*num].tel = (char*)malloc(sizeof(char) * 15);    // 예시로 20으로 가정
+		students[*num].email = (char*)malloc(sizeof(char) * 30);  // 예시로 100으로 가정
+
+		if (students[*num].name == NULL || students[*num].tel == NULL || students[*num].email == NULL) {
+			// 메모리 할당 실패
+			printf("Memory allocation failed.\n");
+			fclose(fp);
+			return;
+		}
+
 		printf("학번 : ");
 		scanf_s("%d", &students[*num].id);
 
 		while (getchar() != '\n');
 
 		printf("이름 : ");
-		fgets(students[*num].name, sizeof(students[*num].name), stdin);
+		fgets(students[*num].name, 40, stdin);
 		students[*num].name[strcspn(students[*num].name, "\n")] = 0;
 
 		printf("전화 : ");
-		fgets(students[*num].tel, sizeof(students[*num].tel), stdin);
+		fgets(students[*num].tel, 15, stdin);
 		students[*num].tel[strcspn(students[*num].tel, "\n")] = 0;
 
 		printf("생년월일 : ");
@@ -82,7 +94,7 @@ void add(Student* students, int* num) {
 		printf("이메일 : ");
 		int c;
 		while ((c = getchar()) != '\n' && c != EOF);
-		fgets(students[*num].email, sizeof(students[*num].email), stdin);
+		fgets(students[*num].email, 30, stdin);
 		students[*num].email[strcspn(students[*num].email, "\n")] = '\0';
 
 		printf("\n %s 의 정보가 추가되었습니다.\n", students[*num].name);
@@ -97,6 +109,10 @@ void add(Student* students, int* num) {
 
 		fclose(fp);
 		(*num)++;
+
+		free(students[*num - 1].name);
+		free(students[*num - 1].tel);
+		free(students[*num - 1].email);
 	}
 	else {
 		printf("File Open Error...\n");
@@ -148,73 +164,74 @@ void del() {
 	}
 } */
 
-void del() {
 
-	int studentId;
-	printf("학번 : ");
-	scanf_s("%d", &studentId);
-
-
-	FILE* fileIn, * fileOut;
-	Student student;
-
-	if (fopen_s(&fileIn, "students.txt", "r") != 0) {
-		perror("File Open Error...");
-		exit(EXIT_FAILURE);
-	}
-
-	if (fopen_s(&fileOut, "temp.txt", "w") != 0) {
-		perror("File Open Error...");
-		fclose(fileIn);
-		exit(EXIT_FAILURE);
-	}
-
-	int found = 0;
-
-	while (fscanf_s(fileIn, "%d %s %s %d %c %d %s",
-		&student.id,
-		student.name,
-		student.tel,
-		&student.birth,
-		&student.gender,
-		&student.height,
-		student.email) != EOF) {
-
-		if (student.id != studentId) {
-			found = 1;
-		}
-		else {
-			fprintf(fileOut, "%d %s %s %d %c %d %s\n",
-				student.id,
-				student.name,
-				student.tel,
-				student.birth,
-				student.gender,
-				student.height,
-				student.email);
-		}
-	}
-
-	fclose(fileIn);
-	fclose(fileOut);
-
-	if (!found) {
-		printf("해당 학생의 정보를 찾을 수 없습니다.\n");
-		remove("temp.txt");
-	}
-	else {
-		if (remove("students.txt") != 0) {
-			perror("Error deleting file...");
-			exit(EXIT_FAILURE);
-		}
-		if (rename("temp.txt", "students.txt") != 0) {
-			perror("Error renaming file...");
-			exit(EXIT_FAILURE);
-		}
-
-		printf("%d 학생의 정보가 삭제되었습니다.\n", studentId);
-	}
-}
+//void del() {
+//
+//	int studentId;
+//	printf("학번 : ");
+//	scanf_s("%d", &studentId);
+//
+//
+//	FILE* fileIn, * fileOut;
+//	Student student;
+//
+//	if (fopen_s(&fileIn, "students.txt", "r") != 0) {
+//		perror("File Open Error...");
+//		exit(EXIT_FAILURE);
+//	}
+//
+//	if (fopen_s(&fileOut, "temp.txt", "w") != 0) {
+//		perror("File Open Error...");
+//		fclose(fileIn);
+//		exit(EXIT_FAILURE);
+//	}
+//
+//	int found = 0;
+//
+//	while (fscanf_s(fileIn, "%d %s %s %d %c %d %s",
+//		&student.id,
+//		student.name,
+//		student.tel,
+//		&student.birth,
+//		&student.gender,
+//		&student.height,
+//		student.email) != EOF) {
+//
+//		if (student.id != studentId) {
+//			found = 1;
+//		}
+//		else {
+//			fprintf(fileOut, "%d %s %s %d %c %d %s\n",
+//				student.id,
+//				student.name,
+//				student.tel,
+//				student.birth,
+//				student.gender,
+//				student.height,
+//				student.email);
+//		}
+//	}
+//
+//	fclose(fileIn);
+//	fclose(fileOut);
+//
+//	if (!found) {
+//		printf("해당 학생의 정보를 찾을 수 없습니다.\n");
+//		remove("temp.txt");
+//	}
+//	else {
+//		if (remove("students.txt") != 0) {
+//			perror("Error deleting file...");
+//			exit(EXIT_FAILURE);
+//		}
+//		if (rename("temp.txt", "students.txt") != 0) {
+//			perror("Error renaming file...");
+//			exit(EXIT_FAILURE);
+//		}
+//
+//		printf("%d 학생의 정보가 삭제되었습니다.\n", studentId);
+//	}
+//}
 
 void sort(Student list[], int* n) {
 
