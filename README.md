@@ -1,6 +1,5 @@
 # student_management_program
 
-test
 
 ## 개요
 
