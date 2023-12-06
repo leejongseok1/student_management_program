@@ -3,6 +3,8 @@
 #include <string.h>
 #include "student.h"
 
+#define MAX_LINE_LENGTH 100
+
 void show();
 void add(Student* students, int* num);
 void del();
@@ -119,50 +121,50 @@ void add(Student* students, int* num) {
 	}
 }
 
-/*
-void del() {
-
-	int idToDel;
-	printf("학번 : ");
-	scanf_s("%d", &idToDel);
-
-	FILE* fp;
-	FILE* temp;
-	errno_t err1;
-	errno_t err2;
-
-	err1 = fopen_s(&fp, "students.txt", "r");
-	err2 = fopen_s(&temp, "temp.txt", "w");
-
-	if (fp == NULL || temp == NULL || err1 != 0 || err2 != 0) {
-		printf("File Open Error...\n");
-		exit(1);
-	}
-
-	Student student;
-	int found = 0;
-
-	while (fread(&student, sizeof(Student), 1, fp)) {
-		if (student.id != idToDel) {
-			fwrite(&student, sizeof(Student), 1, temp);
-		}
-		else {
-			found = 1;
-		}
-	}
-	fclose(fp);
-	fclose(temp);
-
-	if (!found) {
-		remove("temp.txt");
-		printf("해당 학생의 정보를 찾을 수 없습니다.\n");
-	}
-	else {
-		remove("students.txt");
-		rename("temp.txt", "students.txt");
-		printf("%s의 정보가 삭제되었습니다.\n", student.name);
-	}
-} */
+//
+//void del() {
+//
+//	int idToDel;
+//	printf("학번 : ");
+//	scanf_s("%d", &idToDel);
+//
+//	FILE* fp;
+//	FILE* temp;
+//	errno_t err1;
+//	errno_t err2;
+//
+//	err1 = fopen_s(&fp, "students.txt", "r");
+//	err2 = fopen_s(&temp, "temp.txt", "w");
+//
+//	if (fp == NULL || temp == NULL || err1 != 0 || err2 != 0) {
+//		printf("File Open Error...\n");
+//		exit(1);
+//	}
+//
+//	Student student;
+//	int found = 0;
+//
+//	while (fread(&student, sizeof(Student), 1, fp)) {
+//		if (student.id != idToDel) {
+//			fwrite(&student, sizeof(Student), 1, temp);
+//		}
+//		else {
+//			found = 1;
+//		}
+//	}
+//	fclose(fp);
+//	fclose(temp);
+//
+//	if (!found) {
+//		remove("temp.txt");
+//		printf("해당 학생의 정보를 찾을 수 없습니다.\n");
+//	}
+//	else {
+//		remove("students.txt");
+//		rename("temp.txt", "students.txt");
+//		printf("%s의 정보가 삭제되었습니다.\n", student.name);
+//	}
+//} 
 
 
 //void del() {
@@ -233,6 +235,8 @@ void del() {
 //	}
 //}
 
+
+
 void sort(Student list[], int* n) {
 
 	FILE* fp;
@@ -245,6 +249,18 @@ void sort(Student list[], int* n) {
 	int temp = 0;
 
 	if (err == 0 && NULL != fp) {
+
+		list[*n].name = (char*)malloc(sizeof(char) * 40);
+		list[*n].tel = (char*)malloc(sizeof(char) * 15);
+		list[*n].email = (char*)malloc(sizeof(char) * 30);
+
+		if (list[*n].name == NULL || list[*n].tel == NULL || list[*n].email == NULL) {
+			// 메모리 할당 실패
+			printf("Memory allocation failed.\n");
+			fclose(fp);
+			return;
+		}
+
 		while (fscanf_s(fp, "%d %s %s %d %c %d %s", &list[i].id, list[i].name, sizeof(list[i].name),
 			list[i].tel, sizeof(list[i].tel), &list[i].birth,
 			&list[i].gender, sizeof(list[i].gender), &list[i].height,
@@ -272,13 +288,12 @@ void sort(Student list[], int* n) {
 
 }
 
+
 void bubble_Sort(Student list[], int n) {
 	// 키를 기준으로 오름차순 정렬
 	for (int i = 0; i < n - 1; i++) {
 		for (int j = 0; j < n - 1; j++) {
-
 			if (list[j].height > list[j + 1].height) {
-
 				Student temp = list[j];
 				list[j] = list[j + 1];
 				list[j + 1] = temp;
@@ -292,5 +307,4 @@ void bubble_Sort(Student list[], int n) {
 		}
 	}
 }
-
 
