@@ -3,14 +3,11 @@
 #include <string.h>
 #include "student.h"
 
-#define MAX_LINE_LENGTH 100
-
 void show();
 void add(Student* students, int* num);
-void del();
-void sort(Student list[], int* n);
-void bubble_Sort(Student list[], int n);
-
+//void del();
+void sort(Student_2 list[], int* n);
+void bubble_Sort(Student_2 list[], int* n);
 
 
 
@@ -235,9 +232,7 @@ void add(Student* students, int* num) {
 //	}
 //}
 
-
-
-void sort(Student list[], int* n) {
+void sort(Student_2 list[], int* n) {
 
 	FILE* fp;
 	errno_t err;
@@ -249,18 +244,6 @@ void sort(Student list[], int* n) {
 	int temp = 0;
 
 	if (err == 0 && NULL != fp) {
-
-		list[*n].name = (char*)malloc(sizeof(char) * 40);
-		list[*n].tel = (char*)malloc(sizeof(char) * 15);
-		list[*n].email = (char*)malloc(sizeof(char) * 30);
-
-		if (list[*n].name == NULL || list[*n].tel == NULL || list[*n].email == NULL) {
-			// 메모리 할당 실패
-			printf("Memory allocation failed.\n");
-			fclose(fp);
-			return;
-		}
-
 		while (fscanf_s(fp, "%d %s %s %d %c %d %s", &list[i].id, list[i].name, sizeof(list[i].name),
 			list[i].tel, sizeof(list[i].tel), &list[i].birth,
 			&list[i].gender, sizeof(list[i].gender), &list[i].height,
@@ -288,23 +271,23 @@ void sort(Student list[], int* n) {
 
 }
 
-
-void bubble_Sort(Student list[], int n) {
+void bubble_Sort(Student_2 list[], int n) {
 	// 키를 기준으로 오름차순 정렬
 	for (int i = 0; i < n - 1; i++) {
 		for (int j = 0; j < n - 1; j++) {
+
 			if (list[j].height > list[j + 1].height) {
-				Student temp = list[j];
+
+				Student_2 temp = list[j];
 				list[j] = list[j + 1];
 				list[j + 1] = temp;
 			}
 			// 키가 같다면 name ㄱㄴㄷ 순으로 정렬
 			else if (list[j].height == list[j + 1].height && strcmp(list[j].name, list[j + 1].name) > 0) {
-				Student temp = list[j];
+				Student_2 temp = list[j];
 				list[j] = list[j + 1];
 				list[j + 1] = temp;
 			}
 		}
 	}
 }
-

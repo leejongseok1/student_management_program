@@ -2,30 +2,26 @@
 #include "student.h"
 #include "exam.h"
 
-void bubble_Sort(Student list[], int n);
-void sort(Student list[], int* n);
+void bubble_Sort(Student_2 list[], int n);
+void sort(Student_2 list[], int* n);
 //void del();
 void show();
 
-//int compareStudents(const void* a, const void* b);
-//void sortStudentsFromFile(const char* filename);
+
 
 int main() {
 
-	Student studentsArr[20];
+	Student students[20];
 	Exam examArr[20];
+	Student_2 students_2[20]; // sort 용
 
-	int numberOfStudents = 0;
-	int n;
+	int n = 0;
 
-	//show();
-	//add(studentsArr, &numberOfStudents);
+	show();
+	//add(students, &n);
 	//del();
-	//show1();
-	//exam(examArr, &numberOfStudents);
-	sort(studentsArr, &n);
-
-	//sortStudentsFromFile("students.txt");
+	//exam(examArr, &n);
+	//sort(students_2, &n);
 
 	return 0;
 }
