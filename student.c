@@ -43,8 +43,8 @@ void show() {
 
 void add(Student* students, int* num) {
 
-	// 학생이 성공적으로 추가되면 
-	// 포인터를 사용해 num 값 업데이트
+	// 학생이 성공적으로 추가되면
+	// 포인터를 사용해 num 값을 update
 
 	FILE* fp;
 	errno_t err;
@@ -257,7 +257,7 @@ void sort(Student_2 list[], int* n) {
 
 		bubble_Sort(list, *n);
 
-		printf("학번\t\t이름\t전화\t\t생년월일\t성별\t키\t이메일\n");
+		printf("학번\t\t이름\t전화번호\t\t생년월일\t성별\t키\t이메일\n");
 
 		for (i = 0; i < *n; i++) {
 			printf("%d\t%s\t%s\t%d\t%c\t%d\t%s\n", list[i].id, list[i].name, list[i].tel, list[i].birth, list[i].gender, list[i].height, list[i].email);
