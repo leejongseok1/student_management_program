@@ -5,21 +5,20 @@
 
 void show();
 void add(Student* students, int* num);
-//void del();
 void sort(Student_2 list[], int* n);
 void bubble_Sort(Student_2 list[], int* n);
-
+//void del();
 
 
 void show() {
 
 	FILE* fp;
 	errno_t err;
-
 	err = fopen_s(&fp, "students.txt", "rt");
 
 	if (NULL != fp) {
 		printf("학번\t\t이름\t전화\t\t생년월일\t성별\t키\t이메일\n");
+		
 
 		char* buffer = (char*)malloc(200 * sizeof(char));
 
@@ -32,7 +31,6 @@ void show() {
 		{
 			printf("%s", buffer);
 		}
-
 		free(buffer);
 		fclose(fp);
 	}
@@ -48,7 +46,6 @@ void add(Student* students, int* num) {
 
 	FILE* fp;
 	errno_t err;
-
 	err = fopen_s(&fp, "students.txt", "a");
 
 	if (NULL != fp) {
@@ -98,7 +95,8 @@ void add(Student* students, int* num) {
 
 		printf("\n %s 의 정보가 추가되었습니다.\n", students[*num].name);
 
-		fprintf(fp, "%d\t", students[*num].id);
+		// 파일에 내용 추가
+		fprintf(fp, "\n%d\t", students[*num].id);
 		fprintf(fp, "%s\t", students[*num].name);
 		fprintf(fp, "%s\t", students[*num].tel);
 		fprintf(fp, "%d\t", students[*num].birth);
@@ -118,7 +116,61 @@ void add(Student* students, int* num) {
 	}
 }
 
-//
+void sort(Student_2 list[], int* n) {
+
+	FILE* fp;
+	errno_t err;
+	err = fopen_s(&fp, "students.txt", "r");
+
+	int i = 0;
+	int height[20];
+	int temp = 0;
+
+	if (err == 0 && NULL != fp) {
+		while (fscanf_s(fp, "%d %s %s %d %c %d %s", &list[i].id, list[i].name, sizeof(list[i].name),
+			list[i].tel, sizeof(list[i].tel), &list[i].birth,
+			&list[i].gender, sizeof(list[i].gender), &list[i].height,
+			list[i].email, sizeof(list[i].email)) == 7)
+		{
+			height[i] = list[i].height;
+			i++;
+		}
+		*n = i;
+		fclose(fp);
+
+		bubble_Sort(list, *n);
+
+		printf("학번\t\t이름\t전화번호\t\t생년월일\t성별\t키\t이메일\n");
+		for (i = 0; i < *n; i++) {
+			printf("%d\t%s\t%s\t%d\t%c\t%d\t%s\n", list[i].id, list[i].name, list[i].tel, list[i].birth, list[i].gender, list[i].height, list[i].email);
+		}
+	}
+	else {
+		printf("File Open Error...\n");
+	}
+
+}
+
+void bubble_Sort(Student_2 list[], int n) {
+	// 키를 기준으로 오름차순 정렬
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = 0; j < n - 1; j++) {
+			if (list[j].height > list[j + 1].height) {
+				Student_2 temp = list[j];
+				list[j] = list[j + 1];
+				list[j + 1] = temp;
+			}
+			// 키가 같다면 name ㄱㄴㄷ 순으로 정렬
+			else if (list[j].height == list[j + 1].height && strcmp(list[j].name, list[j + 1].name) > 0) {
+				Student_2 temp = list[j];
+				list[j] = list[j + 1];
+				list[j + 1] = temp;
+			}
+		}
+	}
+}
+
+
 //void del() {
 //
 //	int idToDel;
@@ -231,63 +283,3 @@ void add(Student* students, int* num) {
 //		printf("%d 학생의 정보가 삭제되었습니다.\n", studentId);
 //	}
 //}
-
-void sort(Student_2 list[], int* n) {
-
-	FILE* fp;
-	errno_t err;
-
-	err = fopen_s(&fp, "students.txt", "r");
-
-	int i = 0;
-	int height[20];
-	int temp = 0;
-
-	if (err == 0 && NULL != fp) {
-		while (fscanf_s(fp, "%d %s %s %d %c %d %s", &list[i].id, list[i].name, sizeof(list[i].name),
-			list[i].tel, sizeof(list[i].tel), &list[i].birth,
-			&list[i].gender, sizeof(list[i].gender), &list[i].height,
-			list[i].email, sizeof(list[i].email)) == 7)
-		{
-			height[i] = list[i].height;
-			i++;
-		}
-		*n = i;
-		fclose(fp);
-
-		bubble_Sort(list, *n);
-
-		printf("학번\t\t이름\t전화번호\t\t생년월일\t성별\t키\t이메일\n");
-
-		for (i = 0; i < *n; i++) {
-			printf("%d\t%s\t%s\t%d\t%c\t%d\t%s\n", list[i].id, list[i].name, list[i].tel, list[i].birth, list[i].gender, list[i].height, list[i].email);
-		}
-
-
-	}
-	else {
-		printf("File Open Error...\n");
-	}
-
-}
-
-void bubble_Sort(Student_2 list[], int n) {
-	// 키를 기준으로 오름차순 정렬
-	for (int i = 0; i < n - 1; i++) {
-		for (int j = 0; j < n - 1; j++) {
-
-			if (list[j].height > list[j + 1].height) {
-
-				Student_2 temp = list[j];
-				list[j] = list[j + 1];
-				list[j + 1] = temp;
-			}
-			// 키가 같다면 name ㄱㄴㄷ 순으로 정렬
-			else if (list[j].height == list[j + 1].height && strcmp(list[j].name, list[j + 1].name) > 0) {
-				Student_2 temp = list[j];
-				list[j] = list[j + 1];
-				list[j + 1] = temp;
-			}
-		}
-	}
-}

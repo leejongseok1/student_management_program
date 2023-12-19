@@ -16,6 +16,7 @@ void exam(Exam list[], int* n) {
 
 	if (err == 0 && NULL != fp) {
 		while (fscanf_s(fp, "%d %s %d %d", &list[i].id, list[i].name, sizeof(list[i].name), &list[i].mid_score, &list[i].final_score) == 4) {
+			// 중간, 기말 성적의 평균을 구해 avg 배열에 저장
 			avg[i] = (list[i].mid_score + list[i].final_score) / 2.0;
 			i++;
 		}
@@ -24,7 +25,7 @@ void exam(Exam list[], int* n) {
 
 		printf("학번\t\t이름\t중간\t기말\t평균\t학점\n");
 		for (int i = 0; i < *n; i++) {
-			printf("%d\t%5s\t%d\t%d\t%.1f\t%s\n", list[i].id, list[i].name, list[i].mid_score, list[i].final_score, avg[i], grades(avg[i]));
+			printf("%d\t%5s\t %d\t%d\t%.1f\t%s\n", list[i].id, list[i].name, list[i].mid_score, list[i].final_score, avg[i], grades(avg[i]));
 		}
 	}
 	else {
@@ -33,7 +34,7 @@ void exam(Exam list[], int* n) {
 }
 
 char* grades(double avg) {
-	
+
 	if (avg >= 95) {
 		return "A+";
 	}
@@ -60,4 +61,4 @@ char* grades(double avg) {
 	}
 	else
 		return "F";
-	}
+}

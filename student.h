@@ -15,7 +15,7 @@ typedef struct
 {
 	int id;
 	char name[20];
-	char tel[30];
+	char tel[20];
 	int birth;
 	char gender;
 	int height;
