@@ -1,285 +1,140 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
 #include "student.h"
+#include "exam.h"
 
-void show();
-void add(Student* students, int* num);
-void sort(Student_2 list[], int* n);
-void bubble_Sort(Student_2 list[], int* n);
-//void del();
+void show(student* st, int cnt){
+	
+	printf("학번\t\t이름\t전화\t생년월일\t\t성별]t키\t이메일\n");
+	printf("-----------------------------------------------------------------");
 
+	for (int i = 0; i < cnt; i++){
+		printf("%s\t%s\t%s\t%s\t%c\t%d\t%s\n", st[i].id, st[i].name, st[i].tel, st[i].birth, st[i].gender, st[i].height, st[i].email);
+	}
+}
 
-void show() {
+int add(student* st, int cnt){
 
-	FILE* fp;
-	errno_t err;
-	err = fopen_s(&fp, "students.txt", "rt");
+	char id[9];
+	char name[21];
+	char tel[15];
+	char birth[9];
+	char gender;
+	int height;
+	char email[31];
 
-	if (NULL != fp) {
-		printf("학번\t\t이름\t전화\t\t생년월일\t성별\t키\t이메일\n");
+	printf("학번: ");
+	scanf_s("%s", id, sizeof(id));
+
+	printf("이름: ");
+	scanf_s("%s", name, sizeof(name));
+
+	printf("전화: ");
+	scanf_s("%s", tel, sizeof(tel));
+
+	printf("생년월일: ");
+	scanf_s("%s", birth, sizeof(birth));
+
+	printf("성 (m/f): ");
+	scanf_s("%c", &gender, sizeof(gender));
+
+	printf("키: ");
+	scanf_s("%d", &height);
+
+	printf("이메일: ");
+	scanf_s("%s", email, sizeof(email));
+
+	strcpy_s(st[cnt].id, sizeof(id), id);
+	strcpy_s(st[cnt].name, sizeof(name), name);
+	strcpy_s(st[cnt].tel, sizeof(tel), tel);
+	strcpy_s(st[cnt].birth, sizeof(birth), birth);
+	st[cnt].gender = gender;
+	st[cnt].height = height;
+	strcpy_s(st[cnt].email, sizeof(email), email);
+
+	printf("%s 학생이 추가되었습니다.\n", id);
+
+	return cnt + 1;
+}
+
+int del(student* st, int cnt, char* id){
+	
+	int idx = -1;
+
+	for (int i = 0; i < cnt; i++){
+		if(strcmp(st[i].id, id) == 0) {
+			idx = i;
+			break;
+		}
+	}
+
+	if (idx >= 0) {
+		for (int i = idx; i < cnt - 1; i++) {
+			st[i] = st[i + 1];
+		}
+		cnt--;
+		printf("%s 학생을 삭제하였습니다.\n", id);
+	} else {
+		printf("%s 의 정보가 없습니다.\n", id);
+	}
+	return cnt;
+}
+
+void sort(student* st, int cnt){
+	
+	student temp;
+	student* s_list;
+	int sort;
+
+	s_list = (student*) malloc (sizeof(student) * cnt);
+	memcpy(s_list, st, sizeof(student) * cnt);
+	
+	// 자신과 비교한 인덱스 제외
+	for (int a = 0; a < cnt - 1; a++){
+		sort = a;
 		
+		// 자신과 비교한 인덱스 제외
+		for (int b = a + 1; b < cnt; b++){
+			if (s_list[b].height < s_list[sort].height)
+				sort = b;
 
-		char* buffer = (char*)malloc(200 * sizeof(char));
+			// 선택정렬
+			temp = s_list[a];
+			s_list[a] = s_list[sort];
+			s_list[sort] = temp;
+		}
 
-		if (buffer == NULL) {
-			fprintf(stderr, "memory allocation failed\n");
-			fclose(fp);
-			return;
-		}
-		while (NULL != fgets(buffer, 200, fp))
-		{
-			printf("%s", buffer);
-		}
-		free(buffer);
-		fclose(fp);
+		show(s_list, cnt);
 	}
+}
+
+void save_student(student* st, int cnt) {
+	
+	FILE* fp;
+	
+	printf("변경 사항을 파일로 저장합니다.\n");
+	fopen_s(&fp, "students.txt", "w");
+
+	for(int i = 0; i < cnt; i++){
+		fprintf(fp, "%s\t%s\t%s\t%s\t%c\t%d\t%s\n", st[i].id, st[i].name, st[i].tel, st[i].birth, st[i].gender, st[i].height, st[i].email);
+	}
+	fclose(fp);
+}
+
+int memory_expand(student* st, int cnt){
+	
+	student* buffer;
+	
+	buffer = st;
+
+	st = (student *)realloc(st, sizeof(student) * (cnt + ADDCNT));
+	if(st != NULL)
+		printf("메모리 확장.\n");
 	else
-		printf("File Open Error...\n");
+		printf("메모리 확장 실패.\n");
+
+	return cnt + ADDCNT;
 }
-
-
-void add(Student* students, int* num) {
-
-	// 학생이 성공적으로 추가되면
-	// 포인터를 사용해 num 값을 update
-
-	FILE* fp;
-	errno_t err;
-	err = fopen_s(&fp, "students.txt", "a");
-
-	if (NULL != fp) {
-
-		students[*num].name = (char*)malloc(sizeof(char) * 40);  
-		students[*num].tel = (char*)malloc(sizeof(char) * 15);    
-		students[*num].email = (char*)malloc(sizeof(char) * 30);  
-
-		if (students[*num].name == NULL || students[*num].tel == NULL || students[*num].email == NULL) {
-			// 메모리 할당 실패
-			printf("Memory allocation failed.\n");
-			fclose(fp);
-			return;
-		}
-
-		printf("학번 : ");
-		scanf_s("%d", &students[*num].id);
-
-		while (getchar() != '\n');
-
-		printf("이름 : ");
-		fgets(students[*num].name, 40, stdin);
-		students[*num].name[strcspn(students[*num].name, "\n")] = 0;
-
-		printf("전화 : ");
-		fgets(students[*num].tel, 15, stdin);
-		students[*num].tel[strcspn(students[*num].tel, "\n")] = 0;
-
-		printf("생년월일 : ");
-		scanf_s("%d", &students[*num].birth);
-
-		while (getchar() != '\n');
-
-		printf("성 : ");
-		scanf_s("%c", &students[*num].gender, 1);
-
-		while (getchar() != '\n');
-
-		printf("키 : ");
-		scanf_s("%d", &students[*num].height);
-
-		printf("이메일 : ");
-		int c;
-		while ((c = getchar()) != '\n' && c != EOF);
-		fgets(students[*num].email, 30, stdin);
-		students[*num].email[strcspn(students[*num].email, "\n")] = '\0';
-
-		printf("\n %s 의 정보가 추가되었습니다.\n", students[*num].name);
-
-		// 파일에 내용 추가
-		fprintf(fp, "\n%d\t", students[*num].id);
-		fprintf(fp, "%s\t", students[*num].name);
-		fprintf(fp, "%s\t", students[*num].tel);
-		fprintf(fp, "%d\t", students[*num].birth);
-		fprintf(fp, "%c\t", students[*num].gender);
-		fprintf(fp, "%d\t", students[*num].height);
-		fprintf(fp, "%s\n", students[*num].email);
-
-		fclose(fp);
-		(*num)++;
-
-		free(students[*num - 1].name);
-		free(students[*num - 1].tel);
-		free(students[*num - 1].email);
-	}
-	else {
-		printf("File Open Error...\n");
-	}
-}
-
-void sort(Student_2 list[], int* n) {
-
-	FILE* fp;
-	errno_t err;
-	err = fopen_s(&fp, "students.txt", "r");
-
-	int i = 0;
-	int height[20];
-	int temp = 0;
-
-	if (err == 0 && NULL != fp) {
-		while (fscanf_s(fp, "%d %s %s %d %c %d %s", &list[i].id, list[i].name, sizeof(list[i].name),
-			list[i].tel, sizeof(list[i].tel), &list[i].birth,
-			&list[i].gender, sizeof(list[i].gender), &list[i].height,
-			list[i].email, sizeof(list[i].email)) == 7)
-		{
-			height[i] = list[i].height;
-			i++;
-		}
-		*n = i;
-		fclose(fp);
-
-		bubble_Sort(list, *n);
-
-		printf("학번\t\t이름\t전화번호\t\t생년월일\t성별\t키\t이메일\n");
-		for (i = 0; i < *n; i++) {
-			printf("%d\t%s\t%s\t%d\t%c\t%d\t%s\n", list[i].id, list[i].name, list[i].tel, list[i].birth, list[i].gender, list[i].height, list[i].email);
-		}
-	}
-	else {
-		printf("File Open Error...\n");
-	}
-
-}
-
-void bubble_Sort(Student_2 list[], int n) {
-	// 키를 기준으로 오름차순 정렬
-	for (int i = 0; i < n - 1; i++) {
-		for (int j = 0; j < n - 1; j++) {
-			if (list[j].height > list[j + 1].height) {
-				Student_2 temp = list[j];
-				list[j] = list[j + 1];
-				list[j + 1] = temp;
-			}
-			// 키가 같다면 name ㄱㄴㄷ 순으로 정렬
-			else if (list[j].height == list[j + 1].height && strcmp(list[j].name, list[j + 1].name) > 0) {
-				Student_2 temp = list[j];
-				list[j] = list[j + 1];
-				list[j + 1] = temp;
-			}
-		}
-	}
-}
-
-
-//void del() {
-//
-//	int idToDel;
-//	printf("학번 : ");
-//	scanf_s("%d", &idToDel);
-//
-//	FILE* fp;
-//	FILE* temp;
-//	errno_t err1;
-//	errno_t err2;
-//
-//	err1 = fopen_s(&fp, "students.txt", "r");
-//	err2 = fopen_s(&temp, "temp.txt", "w");
-//
-//	if (fp == NULL || temp == NULL || err1 != 0 || err2 != 0) {
-//		printf("File Open Error...\n");
-//		exit(1);
-//	}
-//
-//	Student student;
-//	int found = 0;
-//
-//	while (fread(&student, sizeof(Student), 1, fp)) {
-//		if (student.id != idToDel) {
-//			fwrite(&student, sizeof(Student), 1, temp);
-//		}
-//		else {
-//			found = 1;
-//		}
-//	}
-//	fclose(fp);
-//	fclose(temp);
-//
-//	if (!found) {
-//		remove("temp.txt");
-//		printf("해당 학생의 정보를 찾을 수 없습니다.\n");
-//	}
-//	else {
-//		remove("students.txt");
-//		rename("temp.txt", "students.txt");
-//		printf("%s의 정보가 삭제되었습니다.\n", student.name);
-//	}
-//} 
-
-
-//void del() {
-//
-//	int studentId;
-//	printf("학번 : ");
-//	scanf_s("%d", &studentId);
-//
-//
-//	FILE* fileIn, * fileOut;
-//	Student student;
-//
-//	if (fopen_s(&fileIn, "students.txt", "r") != 0) {
-//		perror("File Open Error...");
-//		exit(EXIT_FAILURE);
-//	}
-//
-//	if (fopen_s(&fileOut, "temp.txt", "w") != 0) {
-//		perror("File Open Error...");
-//		fclose(fileIn);
-//		exit(EXIT_FAILURE);
-//	}
-//
-//	int found = 0;
-//
-//	while (fscanf_s(fileIn, "%d %s %s %d %c %d %s",
-//		&student.id,
-//		student.name,
-//		student.tel,
-//		&student.birth,
-//		&student.gender,
-//		&student.height,
-//		student.email) != EOF) {
-//
-//		if (student.id != studentId) {
-//			found = 1;
-//		}
-//		else {
-//			fprintf(fileOut, "%d %s %s %d %c %d %s\n",
-//				student.id,
-//				student.name,
-//				student.tel,
-//				student.birth,
-//				student.gender,
-//				student.height,
-//				student.email);
-//		}
-//	}
-//
-//	fclose(fileIn);
-//	fclose(fileOut);
-//
-//	if (!found) {
-//		printf("해당 학생의 정보를 찾을 수 없습니다.\n");
-//		remove("temp.txt");
-//	}
-//	else {
-//		if (remove("students.txt") != 0) {
-//			perror("Error deleting file...");
-//			exit(EXIT_FAILURE);
-//		}
-//		if (rename("temp.txt", "students.txt") != 0) {
-//			perror("Error renaming file...");
-//			exit(EXIT_FAILURE);
-//		}
-//
-//		printf("%d 학생의 정보가 삭제되었습니다.\n", studentId);
-//	}
-//}
